@@ -1,0 +1,39 @@
+@startuml
+!theme plain
+title Диаграмма контекста - Сервисы Умный дом
+
+' Пользователи
+actor "Собственник" as owner
+actor "Жилец" as resident  
+actor "Гость" as visitor
+actor "Курьер" as delivery
+
+' Граница системы PropDevelopment
+package "PropDevelopment" {
+    [Мобильное приложение<br/>iOS/Android] as mobile_app
+    [Smart Home API<br/>Kotlin/Spring Boot] as smart_api
+}
+
+' Внешние системы
+[Платформа партнера<br/>Управление умным домом] as partner_platform
+[Интеллектуальный домофон<br/>Биометрическое распознавание] as smart_intercom  
+[Интеллектуальный шлагбаум<br/>Распознавание номеров] as smart_barrier
+
+' Связи пользователей
+owner --> mobile_app : Управляет доступом,\nнастраивает права
+resident --> mobile_app : Получает уведомления,\nуправляет доступом
+visitor --> smart_intercom : Использует для входа
+delivery --> smart_barrier : Проезжает при доставке
+
+' Связи систем
+mobile_app --> smart_api : REST API
+smart_api --> partner_platform : HTTPS/REST
+partner_platform --> smart_intercom : Управляет устройством
+partner_platform --> smart_barrier : Управляет устройством
+
+' Обратные связи
+smart_intercom --> partner_platform : Отправляет события
+smart_barrier --> partner_platform : Отправляет события  
+partner_platform --> smart_api : Webhook уведомления
+
+@enduml 
