@@ -74,7 +74,7 @@
         <mxCell id="conf_link" style="edgeStyle=elbowEdgeStyle;endArrow=none;html=1;strokeColor=#D6B656;" parent="1" source="center" target="conf" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="conf_ex" value="ПДн, сделки, платежи, API-ключи" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E1D5E7;strokeColor=#9673A6;" parent="1" vertex="1">
+        <mxCell id="conf_ex" value="ПДн, сделки, платежи, коммерческая тайна" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E1D5E7;strokeColor=#9673A6;" parent="1" vertex="1">
           <mxGeometry x="180" y="470" width="200" height="40" as="geometry" />
         </mxCell>
         <mxCell id="conf_ex_link" style="edgeStyle=elbowEdgeStyle;endArrow=none;html=1;strokeColor=#9673A6;" parent="1" source="conf" target="conf_ex" edge="1">
@@ -110,7 +110,7 @@
         <mxCell id="secret_link" style="edgeStyle=elbowEdgeStyle;endArrow=none;html=1;strokeColor=#B85450;" parent="1" source="center" target="secret" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="secret_ex" value="Ключи, пароли, коммерческая тайна" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E1D5E7;strokeColor=#9673A6;" parent="1" vertex="1">
+        <mxCell id="secret_ex" value="Ключи, пароли, API-ключи" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E1D5E7;strokeColor=#9673A6;" parent="1" vertex="1">
           <mxGeometry x="660" y="460" width="200" height="40" as="geometry" />
         </mxCell>
         <mxCell id="secret_ex_link" style="edgeStyle=elbowEdgeStyle;endArrow=none;html=1;strokeColor=#9673A6;" parent="1" source="secret" target="secret_ex" edge="1">
