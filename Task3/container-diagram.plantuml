@@ -1,0 +1,134 @@
+@startuml
+!theme plain
+title Диаграмма контейнеров C4 - PropDevelopment с сервисами "Умный дом"
+
+' Пользователи
+actor "Клиент" as client
+actor "Собственник" as owner
+actor "Менеджер продаж" as sales_manager
+actor "Специалист ЖКУ" as hcs_specialist
+actor "Бухгалтер" as accountant
+
+' Внешние системы
+[Управляющая компания<br/>API для ЖКУ] as management_company
+[Банк<br/>Платежная система] as bank
+[Партнер "Умный дом"<br/>Платформа управления] as smart_home_partner
+[Интеллектуальный домофон] as smart_intercom
+[Интеллектуальный шлагбаум] as smart_barrier
+
+' Система PropDevelopment
+rectangle "PropDevelopment" {
+    
+    ' Домен продаж
+    package "Домен продаж" {
+        [Витрина продаж<br/>Web приложение] as sales_showcase
+        [Client Tour App<br/>Приложение онлайн-тура] as client_tour_app
+        [Client Mart App<br/>Приложение онлайн-сделки] as client_mart_app
+        [Client CRM App<br/>Управление клиентскими данными] as client_crm_app
+        [Client Mart Estate App<br/>Управление данными недвижимости] as client_mart_estate_app
+        
+        database "БД Client Tour App" as client_tour_db
+        database "БД Client Mart App" as client_mart_db
+        database "БД Client CRM App" as client_crm_db
+        database "БД Client Mart Estate App" as client_mart_estate_db
+    }
+    
+    ' Домен ЖКУ
+    package "Домен ЖКУ" {
+        [Витрина ЖКУ<br/>Web приложение] as hcs_showcase
+        [Tenant Core App<br/>Сервис предоставления услуг] as tenant_core_app
+        [CRM ЖКУ<br/>Управление данными собственников] as hcs_crm_app
+        
+        database "БД Tenant Core App" as tenant_core_db
+        database "БД CRM ЖКУ" as hcs_crm_db
+    }
+    
+    ' Домен финансов
+    package "Домен финансов" {
+        [Accountant Service 1<br/>Система финансового учета] as accountant_service
+        [Служба каталогов] as catalog_service
+        
+        database "БД Accountant Service" as accountant_db
+    }
+    
+    ' Домен данных
+    package "Домен данных" {
+        [Хранилище данных] as data_warehouse
+        [BI система] as bi_system
+        [Система отчетности] as reporting_system
+    }
+    
+    ' Новый домен "Умный дом"
+    package "Домен Умный дом" {
+        [Smart Home API<br/>Kotlin/Spring Boot] as smart_home_api
+        [API Gateway<br/>Централизованное управление API] as api_gateway
+        [Webhook Service<br/>Обработка уведомлений] as webhook_service
+        [MQTT Broker<br/>Real-time коммуникация] as mqtt_broker
+        [Mobile App<br/>iOS/Android приложение] as mobile_app
+        
+        database "БД Smart Home" as smart_home_db
+    }
+    
+    ' Общие сервисы
+    package "Общие сервисы" {
+        [Keycloak<br/>Аутентификация и авторизация] as keycloak
+        [Active Directory<br/>Корпоративная аутентификация] as active_directory
+        [Redis Cache<br/>Кэширование] as redis_cache
+        [Load Balancer<br/>Распределение нагрузки] as load_balancer
+        [SIEM<br/>Мониторинг безопасности] as siem
+    }
+}
+
+' Связи пользователей
+client --> sales_showcase : Просматривает недвижимость
+client --> client_tour_app : Использует онлайн-тур
+client --> client_mart_app : Проводит онлайн-сделку
+owner --> mobile_app : Управляет услугами и "Умным домом"
+sales_manager --> client_crm_app : Управляет клиентами
+hcs_specialist --> hcs_crm_app : Обслуживает собственников
+accountant --> accountant_service : Ведет финансовый учет
+
+' Связи между доменами
+sales_showcase --> client_crm_app : Получает данные клиентов
+client_mart_app --> client_mart_estate_app : Получает данные недвижимости
+client_mart_app --> accountant_service : Передает данные о сделках
+tenant_core_app --> hcs_crm_app : Получает данные собственников
+tenant_core_app --> accountant_service : Передает данные о платежах
+
+' Связи с внешними системами
+tenant_core_app --> management_company : API для ЖКУ
+accountant_service --> bank : Платежные операции
+smart_home_api --> smart_home_partner : Интеграция с платформой
+smart_home_partner --> smart_intercom : Управление устройством
+smart_home_partner --> smart_barrier : Управление устройством
+
+' Обратные связи от устройств
+smart_intercom --> smart_home_partner : События доступа
+smart_barrier --> smart_home_partner : События проезда
+smart_home_partner --> webhook_service : Webhook уведомления
+webhook_service --> smart_home_api : Обработанные события
+
+' Связи с общими сервисами
+mobile_app --> api_gateway : REST API
+api_gateway --> smart_home_api : Внутренний API
+smart_home_api --> keycloak : Аутентификация
+smart_home_api --> redis_cache : Кэширование
+smart_home_api --> siem : Логирование событий
+load_balancer --> smart_home_api : Распределение нагрузки
+
+' MQTT связи для real-time управления
+smart_home_api --> mqtt_broker : Управление устройствами
+mqtt_broker --> smart_intercom : MQTT команды
+mqtt_broker --> smart_barrier : MQTT команды
+
+' Стили для лучшей читаемости
+skinparam package {
+    BackgroundColor<<Домен продаж>> LightBlue
+    BackgroundColor<<Домен ЖКУ>> LightGreen
+    BackgroundColor<<Домен финансов>> LightYellow
+    BackgroundColor<<Домен данных>> LightCyan
+    BackgroundColor<<Домен Умный дом>> LightPink
+    BackgroundColor<<Общие сервисы>> LightGray
+}
+
+@enduml 
