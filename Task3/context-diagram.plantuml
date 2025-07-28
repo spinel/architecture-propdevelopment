@@ -1,39 +1,66 @@
 @startuml
 !theme plain
-title Диаграмма контекста - Сервисы Умный дом
+title Диаграмма контекста C4 - PropDevelopment с сервисами "Умный дом"
 
-' Пользователи
+' Пользователи системы
+actor "Клиент" as client
 actor "Собственник" as owner
-actor "Жилец" as resident  
+actor "Жилец" as resident
 actor "Гость" as visitor
 actor "Курьер" as delivery
-
-' Граница системы PropDevelopment
-package "PropDevelopment" {
-    [Мобильное приложение<br/>iOS/Android] as mobile_app
-    [Smart Home API<br/>Kotlin/Spring Boot] as smart_api
-}
+actor "Менеджер продаж" as sales_manager
+actor "Специалист ЖКУ" as hcs_specialist
+actor "Бухгалтер" as accountant
 
 ' Внешние системы
-[Платформа партнера<br/>Управление умным домом] as partner_platform
-[Интеллектуальный домофон<br/>Биометрическое распознавание] as smart_intercom  
+[Управляющая компания<br/>API для ЖКУ] as management_company
+[Банк<br/>Платежная система] as bank
+[Партнер "Умный дом"<br/>Платформа управления] as smart_home_partner
+[Интеллектуальный домофон<br/>Биометрическое распознавание] as smart_intercom
 [Интеллектуальный шлагбаум<br/>Распознавание номеров] as smart_barrier
+[СМИ<br/>Новости и реклама] as media
+[Регулирующие органы<br/>Проверки и аудит] as regulators
 
-' Связи пользователей
-owner --> mobile_app : Управляет доступом,\nнастраивает права
-resident --> mobile_app : Получает уведомления,\nуправляет доступом
+' Основная система PropDevelopment
+rectangle "PropDevelopment" {
+    [Система PropDevelopment<br/>Управление недвижимостью и сервисами] as propdev_system
+}
+
+' Связи пользователей с системой
+client --> propdev_system : Просматривает недвижимость,\nбронирует квартиры
+owner --> propdev_system : Управляет услугами ЖКУ,\nконтролирует "Умный дом"
+resident --> propdev_system : Получает уведомления,\nуправляет доступом
 visitor --> smart_intercom : Использует для входа
 delivery --> smart_barrier : Проезжает при доставке
+sales_manager --> propdev_system : Управляет продажами,\nведет клиентов
+hcs_specialist --> propdev_system : Обслуживает собственников
+accountant --> propdev_system : Ведет финансовый учет
 
-' Связи систем
-mobile_app --> smart_api : REST API
-smart_api --> partner_platform : HTTPS/REST
-partner_platform --> smart_intercom : Управляет устройством
-partner_platform --> smart_barrier : Управляет устройством
+' Связи с внешними системами
+propdev_system --> management_company : Получает данные ЖКУ,\nпередает платежи
+propdev_system --> bank : Обрабатывает платежи
+propdev_system --> smart_home_partner : Интегрируется с платформой\n"Умный дом"
+smart_home_partner --> smart_intercom : Управляет устройством
+smart_home_partner --> smart_barrier : Управляет устройством
 
-' Обратные связи
-smart_intercom --> partner_platform : Отправляет события
-smart_barrier --> partner_platform : Отправляет события  
-partner_platform --> smart_api : Webhook уведомления
+' Обратные связи от устройств
+smart_intercom --> smart_home_partner : Отправляет события доступа
+smart_barrier --> smart_home_partner : Отправляет события проезда
+smart_home_partner --> propdev_system : Уведомления о событиях
+
+' Внешние влияния
+media --> propdev_system : Влияет на репутацию
+regulators --> propdev_system : Проводит аудит безопасности
+
+' Стили для лучшей читаемости
+skinparam rectangle {
+    BackgroundColor LightBlue
+    BorderColor DarkBlue
+}
+
+skinparam actor {
+    BackgroundColor LightGreen
+    BorderColor DarkGreen
+}
 
 @enduml 
